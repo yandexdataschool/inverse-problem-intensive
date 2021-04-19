@@ -1,6 +1,8 @@
 # Adapted from https://colab.research.google.com/drive/1CSy-xfrnTX28p1difoTA8ulYw0zytJkq#scrollTo=srZU0YiAQ8rm
 from functools import partial
 from matplotlib.patches import Circle
+import matplotlib.pyplot as plt
+import numpy as onp
 import jax
 import jax.numpy as jnp
 from jax.experimental.ode import odeint
@@ -62,7 +64,7 @@ def rk4_step(f, x, t, h):
   return x + 1/6 * (k1 + 2 * k2 + 2 * k3 + k4)
 
 
-def make_plot(i, cart_coords, l1, l2, max_trail=30, trail_segments=20, r = 0.05):
+def make_plot(i, cart_coords, l1, l2, ax, max_trail=30, trail_segments=20, r=0.05):
     # Plot and save an image of the double pendulum configuration for time step i.
     plt.cla()
 
@@ -94,15 +96,15 @@ def make_plot(i, cart_coords, l1, l2, max_trail=30, trail_segments=20, r = 0.05)
 
 def radial2cartesian(t1, t2, l1, l2):
   # Convert from radial to Cartesian coordinates.
-  x1 = l1 * np.sin(t1)
-  y1 = -l1 * np.cos(t1)
-  x2 = x1 + l2 * np.sin(t2)
-  y2 = y1 - l2 * np.cos(t2)
+  x1 = l1 * jnp.sin(t1)
+  y1 = -l1 * jnp.cos(t1)
+  x2 = x1 + l2 * jnp.sin(t2)
+  y2 = y1 - l2 * jnp.cos(t2)
   return x1, y1, x2, y2
 
 
 def fig2image(fig):
   fig.canvas.draw()
-  data = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+  data = onp.fromstring(fig.canvas.tostring_rgb(), dtype=onp.uint8, sep='')
   image = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
   return image
